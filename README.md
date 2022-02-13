@@ -1,4 +1,4 @@
-# linked_list_to_the_past
+# Linked_List_to_the_Past
 
 **A simple game made in pygame that is similar to Zelda.**
 
