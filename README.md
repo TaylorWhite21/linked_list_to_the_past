@@ -2,7 +2,7 @@
 
 **A simple game made in pygame that is similar to Zelda.**
 
-###Team:
+### Team:
 
 + Bionca Bond
 + David Kariuki
