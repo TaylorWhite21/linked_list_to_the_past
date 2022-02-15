@@ -1,5 +1,7 @@
 # A Linked_List_to_the_Past
 
+[Communication Plan and Conflict Resolution Agreements](https://docs.google.com/document/d/1sxQ-36FK0KuXtHxJafk7SfMc3hJT4hAxr0C4Z5-2EWg/edit?usp=sharing)
+
 ## Software Requirements
 
 ### Vision
