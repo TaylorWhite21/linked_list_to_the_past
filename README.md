@@ -1,32 +1,4 @@
-# linked_list_to_the_past
-
-## User Stories
-
-### Movement
-+ As a user, I want to be able to walk around the map in 4 directions so that I can attach and evade enemies.
-+ **Feature Tasks**: Movements up/down/right/left with keyboard commands.
-+ **Acceptance Test**: Ability to move throughout the whole map/areas
-
-### Graphics
-+ As user, I want to have bright and colorful graphics so that I can easily see enemies and obstacles vividly.
-+ **Feature Tasks**: Game will display 2d sprites. Background textures should be distinct from enemies, items, and projectiles.
-+ **Acceptance Test**: Background colors should be unsaturated when compared to enemies' and the player's sprites to make a stark distinction between them.
-
-### Weapons
-+ As a user, I want to be able to use a weapon to defeat enemies so that I can feel challenged and advance to different rounds.
-+ **Feature Tasks**: User should be able to damage and and kill enemies.
-+ **Acceptance Test**: Enemies should perform a 'hit' animation to give feedback as to when they've been hit and a 'dying' animation to confirm they're defeated.
-
-### Obstacles
-+ As a user I should be able to avoid object/obstacles e.g. rocks so that I can continue to progress through the current round.
-+ **Feature Tasks**: Obstacles and enemies provide collision to the player.
-+ **Acceptance Test**: Obstacles should block player movement, enemies should harm the player as well as block movement.
-
-### Enemies
-+ As a user I need to know when all enemies are eliminated so that I can advance to the next round.
-+ **Feature Tasks**: User should be alerted when they have won the game.
-+ **Acceptance Test**: A win screen is displayed upon victory.
-
+# A Linked_List_to_the_Past
 
 ## Software Requirements
 
@@ -88,3 +60,40 @@
 
 + **Usability** - Game will need to be able to be played on multiple platforms.
 + **Testability** - Game will require a little outside testing to help find unexpected behaviors.
+
+## Wireframe
+
+![Wireframe](wireframes.png)
+
+## Domain Model
+
+![Domain Model](wireframe.png)
+
+## User Stories
+
+### Movement
++ As a user, I want to be able to walk around the map in 4 directions so that I can attach and evade enemies.
++ **Feature Tasks**: Movements up/down/right/left with keyboard commands.
++ **Acceptance Test**: Ability to move throughout the whole map/areas
+
+### Graphics
++ As user, I want to have bright and colorful graphics so that I can easily see enemies and obstacles vividly.
++ **Feature Tasks**: Game will display 2d sprites. Background textures should be distinct from enemies, items, and projectiles.
++ **Acceptance Test**: Background colors should be unsaturated when compared to enemies' and the player's sprites to make a stark distinction between them.
+
+### Weapons
++ As a user, I want to be able to use a weapon to defeat enemies so that I can feel challenged and advance to different rounds.
++ **Feature Tasks**: User should be able to damage and and kill enemies.
++ **Acceptance Test**: Enemies should perform a 'hit' animation to give feedback as to when they've been hit and a 'dying' animation to confirm they're defeated.
+
+### Obstacles
++ As a user I should be able to avoid object/obstacles e.g. rocks so that I can continue to progress through the current round.
++ **Feature Tasks**: Obstacles and enemies provide collision to the player.
++ **Acceptance Test**: Obstacles should block player movement, enemies should harm the player as well as block movement.
+
+### Enemies
++ As a user I need to know when all enemies are eliminated so that I can advance to the next round.
++ **Feature Tasks**: User should be alerted when they have won the game.
++ **Acceptance Test**: A win screen is displayed upon victory.
+
+
