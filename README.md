@@ -63,7 +63,7 @@
 
 ## Wireframe
 
-![Wireframe](wireframes.png)
+![Wireframe](gameplay.png)
 
 ## Domain Model
 
