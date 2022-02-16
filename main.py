@@ -7,7 +7,6 @@ from level import Level
 # os.environ['SDL_VIDEODRIVER']='dummy'
 # os.environ["SDL_AUDIODRIVER"]="dummy"
 
-
 class Game:
   def __init__(self):
     pygame.init()
