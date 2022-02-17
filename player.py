@@ -3,10 +3,14 @@ from settings import *
 
 class Player(pygame.sprite.Sprite): 
     def __init__(self,pos,groups, obstacle_sprites):
-        super().__init__(groups) 
+        super().__init__(groups)
+
         # Sets the player image
         self.image = pygame.image.load('./graphics/goku.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft = pos)  
+        self.rect = self.image.get_rect(topleft = pos)
+
+        #hitbox is slightly different size than sprite
+        self.hitbox = self.rect.inflate(0,-26) 
 
         # Sets the direction that the player can walk in
         self.direction = pygame.math.Vector2()
@@ -14,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         # Sets the player speed
         self.speed = 5
 
-
+        #sprites that will halt player movement
         self.obstacle_sprites = obstacle_sprites
 
     # Collision Detection for obstacles
@@ -24,20 +28,20 @@ class Player(pygame.sprite.Sprite):
         # If the player is moving left or right, checks for collisions, then stops player on that side of the obstacle
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0: 
-                        self.rect.right = sprite.rect.left
+                        self.hitbox.right = sprite.hitbox.left
                     if self.direction.x < 0:
-                        self.rect.left = sprite.rect.right
+                        self.hitbox.left = sprite.hitbox.right
 
         # If the player is moving up or down, checks for collisions, then stops player on that side of the obstacle
         if direction == 'vertical':
             for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0: 
-                        self.rect.bottom = sprite.rect.top
+                        self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+                        self.hitbox.top = sprite.hitbox.bottom
 
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
@@ -68,14 +72,16 @@ class Player(pygame.sprite.Sprite):
 
         # Rect stores and manipulates rectangular areas
         # https://www.pygame.org/docs/ref/rect.html
-        self.rect.x += self.direction.x * speed
+        self.hitbox.x += self.direction.x * speed
         # Collision detection if the player is moving horizontally
         self.collision('horizontal')
 
-        self.rect.y += self.direction.y * speed
+        self.hitbox.y += self.direction.y * speed
         # Collision detection if the player is moving vertically
         self.collision('vertical')
-        # self.rect.center += self.direction * speed
+
+        #recenter rect on hitbox
+        self.rect.center = self.hitbox.center
 
     # Updates the player
     def update(self):
