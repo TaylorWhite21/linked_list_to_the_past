@@ -46,7 +46,6 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)
             print(self.animations)
 
-
     # Collision Detection for obstacles
     # Time stamp on tutorial: 42:00
     def collision(self, direction):
@@ -72,7 +71,8 @@ class Player(pygame.sprite.Sprite):
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
-        keys = pygame.key.get_pressed()
+        if not self.attacking: 
+         keys = pygame.key.get_pressed()
 
         # Moves up or down and will stop moving if nothing is pressed
         if keys[pygame.K_UP]:
@@ -95,13 +95,13 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
         # attack input
-        if keys[pygame.K_SPACE] and not self.attacking:
+        if keys[pygame.K_SPACE]:
             print('attack')
             self.attacking = True
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
         # magic input
-        if keys[pygame.K_LCTRL] and not self.attacking:
+        if keys[pygame.K_LCTRL]:
             print('magic')
             self.attacking = True
             # Grabs time that attack was done
