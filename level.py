@@ -4,7 +4,8 @@ from support import *
 from tile import *
 from player import Player
 from random import choice
-
+from weapon import Weapon 
+from ui import UI
 
 class Level: 
     def __init__(self): 
@@ -19,9 +20,15 @@ class Level:
         # Sets up the sprite groups 
         self.obstacles_sprites = pygame.sprite.Group() 
 
+        #attack sprites 
+        self.current_attack = None
+
          #sprite setup
-         # Creates map on initialization
+            # Creates map on initialization
         self.create_map()
+
+        # user interface
+        self.ui = UI()
 
     # Nested loop that goes through WORLD MAP in settings.
     # Time Stamp: 19:00
@@ -55,13 +62,32 @@ class Level:
                             surf = graphics['objects'][int(col)]
                             Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
-        self.player = Player((2000,1430),[self.visible_sprites], self.obstacles_sprites)
+        self.player = Player((2000,1430),[self.visible_sprites],
+         self.obstacles_sprites,
+         self.create_attack,
+         self.destroy_attack,
+         self.create_magic)
+
+    #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
+    def create_attack(self): 
+        self.current_attack = Weapon(self.player,[self.visible_sprites]) 
+    def create_magic(self, style, strength, cost):
+        print(style)
+        print(strength)
+        print(cost)
+
+
+    def destroy_attack(self): 
+        if self.current_attack(): 
+            self.current_attack.kill()
+        self.current_attack = None 
 
     def run(self): 
         # draws the player sprite 
         self.visible_sprites.custom_draw(self.player)
         # update and draw the game 
         self.visible_sprites.update()
+        self.ui.display(self.player)
 
 #camera class, extends sprite group to allow z axis functionlity
 class YSortCameraGroup(pygame.sprite.Group):
