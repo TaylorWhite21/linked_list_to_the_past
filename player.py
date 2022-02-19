@@ -3,7 +3,7 @@ from settings import *
 from support import import_folder 
 
 class Player(pygame.sprite.Sprite): 
-    def __init__(self,pos,groups, obstacle_sprites):
+    def __init__(self,pos,groups, obstacle_sprites,create_attack,destroy_attack):
         super().__init__(groups)
 
         # Sets the player image
@@ -13,26 +13,39 @@ class Player(pygame.sprite.Sprite):
         #hitbox is slightly different size than sprite
         self.hitbox = self.rect.inflate(0,-26) 
 
+        # graphics setup
+        self.import_player_assets()
         self.status = 'down'
         self.frame_index = 0
         self.animation_speed = 0.15
 
-        # Sets the direction that the player can walk in
+        #movement
+            # Sets the direction that the player can walk in
         self.direction = pygame.math.Vector2()
 
-        # Attack variables
+            # Attack variables
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_timer = None
 
-        # Sets the player speed
+            # Sets the player speed
         self.speed = 5
 
-        #sprites that will halt player movement
+            #sprites that will halt player movement
         self.obstacle_sprites = obstacle_sprites
+        
+        #weapon
+        self.create_attack = create_attack
+        self.destroy_attack = destroy_attack 
+            #tells us which weapon is selected 
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        #print(self.weapon) 
+            #make the weapon timer
+        self.can_switch_weapon = True 
+        self.weapon_switch_time = None 
+        self.switch_duration_cooldown = 200
 
-        # graphics setup
-        self.import_player_assets()
 
     # imports player resources
     def import_player_assets(self):
@@ -45,7 +58,6 @@ class Player(pygame.sprite.Sprite):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
             print(self.animations)
-
 
     # Collision Detection for obstacles
     # Time stamp on tutorial: 42:00
@@ -72,7 +84,8 @@ class Player(pygame.sprite.Sprite):
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
-        keys = pygame.key.get_pressed()
+        if not self.attacking: 
+         keys = pygame.key.get_pressed()
 
         # Moves up or down and will stop moving if nothing is pressed
         if keys[pygame.K_UP]:
@@ -95,17 +108,30 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
         # attack input
-        if keys[pygame.K_SPACE] and not self.attacking:
+        if keys[pygame.K_SPACE]:
             print('attack')
             self.attacking = True
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
+            self.create_attack()
         # magic input
-        if keys[pygame.K_LCTRL] and not self.attacking:
+        if keys[pygame.K_LCTRL]:
             print('magic')
             self.attacking = True
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
+        #weapons cycle
+        if keys[pygame.K_q] and self.can_switch_weapon:
+            self.can_switch_weapon = False 
+            self.weapon_switch_time = pygame.time.get_ticks()
+            #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+            if self.weapon_index < len(list(weapon_data.keys())) - 1:
+                self.weapon_index += 1
+            else:
+                #reset the list once at the end
+                self.weapon_index = 0
+            self.weapon = list(weapon_data.keys())[self.weapon_index]
+
 
 
     def get_status(self):
@@ -130,7 +156,6 @@ class Player(pygame.sprite.Sprite):
         else:
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
-
 
 
     # Move method that tells the player how to move
@@ -158,9 +183,12 @@ class Player(pygame.sprite.Sprite):
         if self.attacking:
             # Checks if enough time has passed since attacking
             if current_time - self.attack_time >= self.attack_cooldown:
-                self.attacking = False
+                self.attacking = False 
+                self.destroy_attack()
 
-
+        if not self.can_switch_weapon: 
+            if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_weapon = True
     def animate(self):
         # Gets animation from dictionary based off player status
         animation = self.animations[self.status]

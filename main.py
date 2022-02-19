@@ -16,6 +16,7 @@ class Game:
     # Creates an object to track time
     self.clock = pygame.time.Clock()
 
+    
     # Instantiates the Level
     self.level = Level() 
   
