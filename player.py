@@ -3,7 +3,8 @@ from settings import *
 from support import import_folder 
 
 class Player(pygame.sprite.Sprite): 
-    def __init__(self,pos,groups, obstacle_sprites,create_attack,destroy_attack):
+
+    def __init__(self,pos,groups, obstacle_sprites,create_attack,destroy_attack, create_ki):
         super().__init__(groups)
 
         # Sets the player image
@@ -28,9 +29,6 @@ class Player(pygame.sprite.Sprite):
         self.attack_cooldown = 400
         self.attack_timer = None
 
-            # Sets the player speed
-        self.speed = 5
-
             #sprites that will halt player movement
         self.obstacle_sprites = obstacle_sprites
         
@@ -45,7 +43,23 @@ class Player(pygame.sprite.Sprite):
         self.can_switch_weapon = True 
         self.weapon_switch_time = None 
         self.switch_duration_cooldown = 200
-
+        
+        # ki
+        self.create_ki = create_ki
+        self.ki_index = 0
+        self.ki = list(ki_data.keys())[self.ki_index]
+        self.can_switch_ki = True
+        self.ki_switch_time = None
+        
+        # Stats
+        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
+        # Sets the player health
+        self.health = self.stats['health']
+        # Sets the player energy
+        self.energy = self.stats['energy']
+        # Sets the player speed
+        self.speed = self.stats['speed']
+        full_heart = pygame.image.load('.\graphics\heart.png')
 
     # imports player resources
     def import_player_assets(self):
@@ -84,8 +98,10 @@ class Player(pygame.sprite.Sprite):
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
-        if not self.attacking: 
-         keys = pygame.key.get_pressed()
+
+        # if not self.attacking: 
+        
+        keys = pygame.key.get_pressed()
 
         # Moves up or down and will stop moving if nothing is pressed
         if keys[pygame.K_UP]:
@@ -114,12 +130,18 @@ class Player(pygame.sprite.Sprite):
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
             self.create_attack()
-        # magic input
+
+        # ki input
         if keys[pygame.K_LCTRL]:
-            print('magic')
             self.attacking = True
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
+            style = list(ki_data.keys())[self.ki_index]
+            strength = list(ki_data.values())[self.ki_index]['strength']
+            cost = list(ki_data.values())[self.ki_index]['cost']
+
+            self.create_ki(style, strength, cost)
+            
         #weapons cycle
         if keys[pygame.K_q] and self.can_switch_weapon:
             self.can_switch_weapon = False 
@@ -133,6 +155,18 @@ class Player(pygame.sprite.Sprite):
             self.weapon = list(weapon_data.keys())[self.weapon_index]
 
 
+        # ki cycling
+        if keys[pygame.K_e] and self.can_switch_ki:
+            self.can_switch_ki = False 
+            self.ki_switch_time = pygame.time.get_ticks()
+            #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+            if self.ki_index < len(list(ki_data.keys())) - 1:
+                self.ki_index += 1
+            else:
+                #reset the list once at the end
+                self.ki_index = 0
+            self.ki = list(ki_data.keys())[self.ki_index]
+            
 
     def get_status(self):
         # Runs if we are not moving
@@ -185,6 +219,14 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False 
                 self.destroy_attack()
+
+        if not self.can_switch_weapon: 
+            if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_weapon = True
+
+        if not self.can_switch_ki: 
+            if current_time - self.ki_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_ki = True
 
         if not self.can_switch_weapon: 
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
