@@ -7,6 +7,7 @@ from random import choice
 from weapon import Weapon 
 from ui import UI
 
+
 class Level: 
     def __init__(self): 
 
@@ -68,14 +69,15 @@ class Level:
          self.destroy_attack,
          self.create_magic)
 
+
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
     def create_attack(self): 
         self.current_attack = Weapon(self.player,[self.visible_sprites]) 
+
     def create_magic(self, style, strength, cost):
         print(style)
         print(strength)
         print(cost)
-
 
     def destroy_attack(self): 
         if self.current_attack(): 

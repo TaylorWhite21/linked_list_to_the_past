@@ -3,6 +3,7 @@ from settings import *
 from support import import_folder 
 
 class Player(pygame.sprite.Sprite): 
+
     def __init__(self,pos,groups, obstacle_sprites,create_attack,destroy_attack, create_ki):
         super().__init__(groups)
 
@@ -42,8 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.can_switch_weapon = True 
         self.weapon_switch_time = None 
         self.switch_duration_cooldown = 200
-
-
+        
         # ki
         self.create_ki = create_ki
         self.ki_index = 0
@@ -51,8 +51,6 @@ class Player(pygame.sprite.Sprite):
         self.can_switch_ki = True
         self.ki_switch_time = None
         
-
-
         # Stats
         self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
         # Sets the player health
@@ -100,9 +98,11 @@ class Player(pygame.sprite.Sprite):
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
+
         # if not self.attacking: 
         
         keys = pygame.key.get_pressed()
+
         # Moves up or down and will stop moving if nothing is pressed
         if keys[pygame.K_UP]:
             self.direction.y = -1
@@ -130,6 +130,7 @@ class Player(pygame.sprite.Sprite):
             # Grabs time that attack was done
             self.attack_time = pygame.time.get_ticks()
             self.create_attack()
+
         # ki input
         if keys[pygame.K_LCTRL]:
             self.attacking = True
@@ -140,8 +141,7 @@ class Player(pygame.sprite.Sprite):
             cost = list(ki_data.values())[self.ki_index]['cost']
 
             self.create_ki(style, strength, cost)
-
-
+            
         #weapons cycle
         if keys[pygame.K_q] and self.can_switch_weapon:
             self.can_switch_weapon = False 
@@ -154,6 +154,7 @@ class Player(pygame.sprite.Sprite):
                 self.weapon_index = 0
             self.weapon = list(weapon_data.keys())[self.weapon_index]
 
+
         # ki cycling
         if keys[pygame.K_e] and self.can_switch_ki:
             self.can_switch_ki = False 
@@ -165,8 +166,7 @@ class Player(pygame.sprite.Sprite):
                 #reset the list once at the end
                 self.ki_index = 0
             self.ki = list(ki_data.keys())[self.ki_index]
-
-
+            
 
     def get_status(self):
         # Runs if we are not moving
@@ -228,7 +228,9 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.ki_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_ki = True
 
-
+        if not self.can_switch_weapon: 
+            if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_weapon = True
     def animate(self):
         # Gets animation from dictionary based off player status
         animation = self.animations[self.status]
