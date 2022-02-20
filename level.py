@@ -51,43 +51,45 @@ class Level:
         # }
 
         layout = {
-            'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
+            # 'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
             'entities':import_csv_layout('./map/custom_map/level_1_entities.csv'),
             'boundary': import_csv_layout('./map/custom_map/level_1_boundary.csv'),
             'grass': import_csv_layout('./map/custom_map/level_1_grass.csv'),
             'floor':import_csv_layout('./map/custom_map/level_1_floor.csv'),
         }
+        
         graphics = {
-            'grass': import_folder('./graphics/Grass'),
+            # 'grass': import_folder('./graphics/Grass'),
             'objects': import_folder('./graphics/objects')
         }
-        print(graphics)
+        # print(f'graphics: {graphics}')
         
         # # Enumerates every row
         for style,layout in layout.items():
             for row_index,row in enumerate(layout):
              # Enumerates every column
                 for col_index, col in enumerate(row):
+                    
                     if col != '-1':
                  # Assigns column and row with the TILESIZE from settings
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x,y),[self.obstacles_sprites], 'invisible')
-                        if style == 'grass':
-                            random_grass_image = choice(graphics['grass'])
-                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
+                        # if style == 'grass':
+                        #     random_grass_image = choice(graphics['grass'])
+                        #     Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
-                            # print(surf)
-
+                            print(int(col))
+                            
 
                             Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'object',surf)
 
                         if style == 'entities':
                             # number 394 comes from tile creation, It can change based on graphics
-                            if col == '117':
+                            if col == '5':
                                  self.player = Player((x,y),[self.visible_sprites],
                                                self.obstacles_sprites,
                                                self.create_attack,
@@ -95,8 +97,8 @@ class Level:
                                                self.create_ki)
                             else:
                                 if col == '3' : monster_name = 'bamboo'
-                                elif col == '2' : monster_name = 'spirit'
-                                elif col == '0' : monster_name = 'raccoon'
+                                elif col == '0' : monster_name = 'spirit'
+                                elif col == '2' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
                                 Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
                 

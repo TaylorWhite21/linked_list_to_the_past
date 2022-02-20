@@ -1,7 +1,7 @@
 import pygame, sys
 from settings import *
 from level import Level
-from pytmx.util_pygame import load_pygame
+
 
 # from debug import debug
 
@@ -37,7 +37,7 @@ class Game:
       # Calls the run method inside of the level class in level.py
       self.level.run()
 
-      
+
 
       # Updates portions of the screen for software displays
       pygame.display.update()
