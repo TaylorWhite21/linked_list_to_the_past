@@ -75,7 +75,7 @@ class Level:
                                                self.obstacles_sprites,
                                                self.create_attack,
                                                self.destroy_attack,
-                                               self.create_magic)
+                                               self.create_ki)
                             else:
                                 if col == '390' : monster_name = 'bamboo'
                                 elif col == '391' : monster_name = 'spirit'
@@ -91,7 +91,7 @@ class Level:
     def create_attack(self): 
         self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
-                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
+        Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
         self.player = Player((2000,1430),[self.visible_sprites],
         self.obstacles_sprites,
