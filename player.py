@@ -88,73 +88,73 @@ class Player(Entity):
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
 
-        # if not self.attacking: 
+        if not self.attacking: 
         
-        keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()
 
-        # Moves up or down and will stop moving if nothing is pressed
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-            self.status = 'up'
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-            self.status = 'down'
-        else:
-            self.direction.y = 0
-
-        # Moves left or right and will stop moving if no key is pressed
-        if keys[pygame.K_LEFT]:
-            self.direction.x = -1
-            self.status = 'left'
-        elif keys[pygame.K_RIGHT]:
-            self.direction.x = 1
-            self.status = 'right'
-        else:
-            self.direction.x = 0
-
-        # attack input
-        if keys[pygame.K_SPACE]:
-            self.attacking = True
-            # Grabs time that attack was done
-            self.attack_time = pygame.time.get_ticks()  
-            self.create_attack()
-            print('attack')
-
-        # ki input
-        if keys[pygame.K_LCTRL]:
-            self.attacking = True
-            # Grabs time that attack was done
-            self.attack_time = pygame.time.get_ticks()
-            style = list(ki_data.keys())[self.ki_index]
-            strength = list(ki_data.values())[self.ki_index]['strength']
-            cost = list(ki_data.values())[self.ki_index]['cost']
-
-            self.create_ki(style, strength, cost)
-            
-        #weapons cycle
-        if keys[pygame.K_q] and self.can_switch_weapon:
-            self.can_switch_weapon = False 
-            self.weapon_switch_time = pygame.time.get_ticks()
-            #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
-            if self.weapon_index < len(list(weapon_data.keys())) - 1:
-                self.weapon_index += 1
+            # Moves up or down and will stop moving if nothing is pressed
+            if keys[pygame.K_UP]:
+                self.direction.y = -1
+                self.status = 'up'
+            elif keys[pygame.K_DOWN]:
+                self.direction.y = 1
+                self.status = 'down'
             else:
-                #reset the list once at the end
-                self.weapon_index = 0
-            self.weapon = list(weapon_data.keys())[self.weapon_index]
+                self.direction.y = 0
 
-
-        # ki cycling
-        if keys[pygame.K_e] and self.can_switch_ki:
-            self.can_switch_ki = False 
-            self.ki_switch_time = pygame.time.get_ticks()
-            #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
-            if self.ki_index < len(list(ki_data.keys())) - 1:
-                self.ki_index += 1
+            # Moves left or right and will stop moving if no key is pressed
+            if keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+            elif keys[pygame.K_RIGHT]:
+                self.direction.x = 1
+                self.status = 'right'
             else:
-                #reset the list once at the end
-                self.ki_index = 0
-            self.ki = list(ki_data.keys())[self.ki_index]
+                self.direction.x = 0
+
+            # attack input
+            if keys[pygame.K_SPACE]:
+                self.attacking = True
+                # Grabs time that attack was done
+                self.attack_time = pygame.time.get_ticks()  
+                self.create_attack()
+                print('attack')
+
+            # ki input
+            if keys[pygame.K_LCTRL]:
+                self.attacking = True
+                # Grabs time that attack was done
+                self.attack_time = pygame.time.get_ticks()
+                style = list(ki_data.keys())[self.ki_index]
+                strength = list(ki_data.values())[self.ki_index]['strength']
+                cost = list(ki_data.values())[self.ki_index]['cost']
+
+                self.create_ki(style, strength, cost)
+                
+            #weapons cycle
+            if keys[pygame.K_q] and self.can_switch_weapon:
+                self.can_switch_weapon = False 
+                self.weapon_switch_time = pygame.time.get_ticks()
+                #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+                if self.weapon_index < len(list(weapon_data.keys())) - 1:
+                    self.weapon_index += 1
+                else:
+                    #reset the list once at the end
+                    self.weapon_index = 0
+                self.weapon = list(weapon_data.keys())[self.weapon_index]
+
+
+            # ki cycling
+            if keys[pygame.K_e] and self.can_switch_ki:
+                self.can_switch_ki = False 
+                self.ki_switch_time = pygame.time.get_ticks()
+                #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+                if self.ki_index < len(list(ki_data.keys())) - 1:
+                    self.ki_index += 1
+                else:
+                    #reset the list once at the end
+                    self.ki_index = 0
+                self.ki = list(ki_data.keys())[self.ki_index]
             
 
     def get_status(self):
