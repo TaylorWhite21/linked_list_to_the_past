@@ -1,6 +1,7 @@
 import pygame, sys
 from settings import *
 from level import Level
+from pytmx.util_pygame import load_pygame
 
 # from debug import debug
 
@@ -18,8 +19,11 @@ class Game:
 
     
     # Instantiates the Level
-    self.level = Level() 
-  
+    self.level = Level()
+
+    #testing custom map
+    # self.level = Level(level_0,self.screen)
+
   # Runs the game and checks if the player has exited
   def run(self):
     while True:
@@ -32,6 +36,8 @@ class Game:
 
       # Calls the run method inside of the level class in level.py
       self.level.run()
+
+      
 
       # Updates portions of the screen for software displays
       pygame.display.update()
