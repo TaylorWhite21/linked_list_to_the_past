@@ -1,10 +1,10 @@
-import pygame 
+import pygame,sys
 from settings import *
 from support import import_folder 
 
 class Player(pygame.sprite.Sprite): 
 
-    def __init__(self,pos,groups, obstacle_sprites,create_attack,destroy_attack, create_ki):
+    def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_ki):
         super().__init__(groups)
 
         # Sets the player image
@@ -20,30 +20,31 @@ class Player(pygame.sprite.Sprite):
         self.frame_index = 0
         self.animation_speed = 0.15
 
-        #movement
+        #MOVEMENT
             # Sets the direction that the player can walk in
         self.direction = pygame.math.Vector2()
 
-            # Attack variables
+            # attack variables
         self.attacking = False
-        self.attack_cooldown = 400
+        #400************************
+        self.attack_cooldown = 200
         self.attack_timer = None
 
             #sprites that will halt player movement
         self.obstacle_sprites = obstacle_sprites
         
-        #weapon
+        # WEAPONS
         self.create_attack = create_attack
-        self.destroy_attack = destroy_attack 
-            #tells us which weapon is selected 
+        self.destroy_attack = destroy_attack
         self.weapon_index = 0
+            #tells us which weapon is selected from our weapon data which is a list
         self.weapon = list(weapon_data.keys())[self.weapon_index]
-        #print(self.weapon) 
+        # print(f"This is weapon: {self.weapon}") 
             #make the weapon timer
         self.can_switch_weapon = True 
         self.weapon_switch_time = None 
-        self.switch_duration_cooldown = 200
-        
+        self.switch_duration_cooldown = 200      
+   
         # ki
         self.create_ki = create_ki
         self.ki_index = 0
@@ -52,6 +53,7 @@ class Player(pygame.sprite.Sprite):
         self.ki_switch_time = None
         
         # Stats
+        
         self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
         # Sets the player health
         self.health = self.stats['health']
@@ -59,7 +61,8 @@ class Player(pygame.sprite.Sprite):
         self.energy = self.stats['energy']
         # Sets the player speed
         self.speed = self.stats['speed']
-        full_heart = pygame.image.load('.\graphics\heart.png')
+        # full_heart = pygame.image.load('.\graphics\heart.png') 
+
 
     # imports player resources
     def import_player_assets(self):
@@ -71,7 +74,8 @@ class Player(pygame.sprite.Sprite):
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
-            print(self.animations)
+            #this is printing that surface stuff:
+            # print(self.animations)
 
     # Collision Detection for obstacles
     # Time stamp on tutorial: 42:00
@@ -125,11 +129,11 @@ class Player(pygame.sprite.Sprite):
 
         # attack input
         if keys[pygame.K_SPACE]:
-            print('attack')
             self.attacking = True
             # Grabs time that attack was done
-            self.attack_time = pygame.time.get_ticks()
+            self.attack_time = pygame.time.get_ticks()  
             self.create_attack()
+            print('attack')
 
         # ki input
         if keys[pygame.K_LCTRL]:
@@ -217,8 +221,10 @@ class Player(pygame.sprite.Sprite):
         if self.attacking:
             # Checks if enough time has passed since attacking
             if current_time - self.attack_time >= self.attack_cooldown:
-                self.attacking = False 
+                self.attacking = False
                 self.destroy_attack()
+
+                print(f'destroy:{self.destroy_attack}')
 
         if not self.can_switch_weapon: 
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:

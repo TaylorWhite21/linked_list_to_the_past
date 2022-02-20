@@ -18,7 +18,7 @@ class Level:
         # Sets up the camera group
         self.visible_sprites = YSortCameraGroup()
 
-        # Sets up the sprite groups 
+        # Sets up the obstacles sprites group
         self.obstacles_sprites = pygame.sprite.Group() 
 
         #attack sprites 
@@ -64,25 +64,28 @@ class Level:
                             Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
         self.player = Player((2000,1430),[self.visible_sprites],
-         self.obstacles_sprites,
-         self.create_attack,
-         self.destroy_attack,
-         self.create_magic)
+        self.obstacles_sprites,
+        self.create_attack,
+        self.destroy_attack,
+        self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
     def create_attack(self): 
-        self.current_attack = Weapon(self.player,[self.visible_sprites]) 
+       self.current_attack = Weapon(self.player,[self.visible_sprites]) 
 
-    def create_magic(self, style, strength, cost):
+    def destroy_attack(self): 
+        if self.current_attack:
+            print(f"inside of destroy{self.current_attack}")
+            self.current_attack.kill()
+        self.current_attack = None 
+            #print(f"this is current attack: {self.current_attack}")
+
+    def create_ki(self, style, strength, cost):
         print(style)
         print(strength)
         print(cost)
 
-    def destroy_attack(self): 
-        if self.current_attack(): 
-            self.current_attack.kill()
-        self.current_attack = None 
 
     def run(self): 
         # draws the player sprite 
