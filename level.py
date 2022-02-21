@@ -61,7 +61,7 @@ class Level:
                             Tile((x,y),[self.obstacles_sprites], 'invisible')
                         if style == 'grass':
                             random_grass_image = choice(graphics['grass'])
-                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
+                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'grass',random_grass_image)
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
@@ -81,28 +81,28 @@ class Level:
                                 elif col == '391' : monster_name = 'spirit'
                                 elif col == '392' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
+                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites,self.damage_player)
 
 
                         
        
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
-    def create_attack(self): 
-        self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
+    #def create_attack(self): 
+       # self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
-        Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
+        #Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
-        self.player = Player((2000,1430),[self.visible_sprites],
-        self.obstacles_sprites,
-        self.create_attack,
-        self.destroy_attack,
-        self.create_ki)
+        #self.player = Player((2000,1430),[self.visible_sprites],
+        #self.obstacles_sprites,
+        #self.create_attack,
+        #self.destroy_attack,
+        #self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
     def create_attack(self): 
-       self.current_attack = Weapon(self.player,[self.visible_sprites]) 
+       self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
 
     def destroy_attack(self): 
@@ -121,10 +121,21 @@ class Level:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprite =pygame.sprite.spritecollide(attack_sprite,self.attack_sprites,True)
+                collision_sprite =pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False)
                 if collision_sprite:
                     for target_sprite in collision_sprite:
-                        target_sprite.kill()
+                        if target_sprite.sprite_type == 'grass':
+                            target_sprite.kill()
+                        else:
+                            target_sprite.get_damage(self.player,attack_sprite.sprite_type)
+
+    def damage_player(self,amount,attack_type):
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+
+
 
     def run(self): 
         # draws the player sprite 
