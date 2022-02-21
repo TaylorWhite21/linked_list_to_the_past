@@ -1,4 +1,5 @@
 import pygame
+from math import sin
 
 
  #created entity.py to hold common methods shared by players and enemies e.g move and collison
@@ -49,3 +50,10 @@ class Entity(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
+
+  def wave_value(self):
+    value=sin(pygame.time.get_ticks())
+    if value >= 0: 
+        return 255
+    else:
+        return 0
