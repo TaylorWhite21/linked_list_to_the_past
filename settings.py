@@ -1,8 +1,12 @@
+import pygame
+
 #1280 960
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
 TILESIZE = 64
+BACKGROUND = pygame.image.load('./graphics/title/title.png')
+# MAIN_MENU_MUSIC = pygame.mixer.Sound('./audio/menu_music.wav')
 
 # UI Settings
 BAR_HEIGHT = 20
