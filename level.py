@@ -111,10 +111,8 @@ class Level:
 
     def destroy_attack(self): 
         if self.current_attack:
-            print(f"inside of destroy{self.current_attack}")
             self.current_attack.kill()
         self.current_attack = None 
-            #print(f"this is current attack: {self.current_attack}")
 
     def create_ki(self, style, strength, cost):
         print(style)
