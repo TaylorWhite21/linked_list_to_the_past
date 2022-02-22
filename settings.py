@@ -1,8 +1,11 @@
+import pygame
+
 #1280 960
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
 TILESIZE = 64
+BACKGROUND = pygame.image.load('./graphics/title/title.png')
 
 # UI Settings
 BAR_HEIGHT = 20
