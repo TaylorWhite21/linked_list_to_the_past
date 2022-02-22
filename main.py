@@ -19,6 +19,10 @@ class Game:
     
     # Instantiates the Level
     self.level = Level() 
+
+    # sound
+    main_sound =pygame.mixer.Sound('./audio/main.wav')
+    main_sound.play(loops = -1)
   
   # Runs the game and checks if the player has exited
   def run(self):
@@ -28,7 +32,7 @@ class Game:
           pygame.quit()
           sys.exit()
       # Determines what color the screen background will be
-      self.screen.fill('black')
+      self.screen.fill(WATER_COLOR)
 
       # Calls the run method inside of the level class in level.py
       self.level.run()
