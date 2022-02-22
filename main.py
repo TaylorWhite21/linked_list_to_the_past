@@ -23,12 +23,6 @@ class Game:
   # Runs the game and checks if the player has exited
   def run(self):
     while True:
-      print(pygame.display.update)
-      self.screen.fill((252,0,0))
-      pygame.display.update()   
-      # self.screen.fill('black')
-      # pygame.display.update()
-      self.clock.tick(60)
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
