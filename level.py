@@ -46,7 +46,7 @@ class Level:
         }
         
         graphics = {
-            # 'grass': import_folder('./graphics/Grass'),
+            'grass': import_folder('./graphics/Grass'),
             'objects': import_folder('./graphics/objects')
         }
         # print(f'graphics: {graphics}')
@@ -63,9 +63,10 @@ class Level:
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x,y),[self.obstacles_sprites], 'invisible')
-                        # if style == 'grass':
-                        #     random_grass_image = choice(graphics['grass'])
-                        #     Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
+                        
+                        if style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'grass',random_grass_image)
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
@@ -87,7 +88,7 @@ class Level:
                                 elif col == '1' : monster_name = 'spirit'
                                 elif col == '0' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
+                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites, self.damage_player)
                 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
@@ -129,6 +130,8 @@ class Level:
                     for target_sprite in collision_sprite:
                         if target_sprite.sprite_type == 'grass':
                             target_sprite.kill()
+                        elif target_sprite.sprite_type == 'object':
+                            pass
                         else:
                             target_sprite.get_damage(self.player,attack_sprite.sprite_type)
 
