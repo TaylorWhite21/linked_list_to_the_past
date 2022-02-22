@@ -38,66 +38,69 @@ class Level:
     # Time Stamp: 19:00
     def create_map(self): 
         layout = {
-            'boundary': import_csv_layout('./map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('./map/map_Grass.csv'),
-            'object': import_csv_layout('./map/map_Objects.csv'),
-            'entities':import_csv_layout('./map/map_Entities.csv')
+            'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
+            'entities':import_csv_layout('./map/custom_map/level_1_entities.csv'),
+            'boundary': import_csv_layout('./map/custom_map/level_1_boundary.csv'),
+            'grass': import_csv_layout('./map/custom_map/level_1_grass.csv'),
+            'floor':import_csv_layout('./map/custom_map/level_1_floor.csv'),
         }
+        
         graphics = {
-            'grass': import_folder('./graphics/Grass'),
+            # 'grass': import_folder('./graphics/Grass'),
             'objects': import_folder('./graphics/objects')
         }
+        # print(f'graphics: {graphics}')
         
         # # Enumerates every row
         for style,layout in layout.items():
             for row_index,row in enumerate(layout):
              # Enumerates every column
                 for col_index, col in enumerate(row):
+                    
                     if col != '-1':
                  # Assigns column and row with the TILESIZE from settings
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x,y),[self.obstacles_sprites], 'invisible')
-                        if style == 'grass':
-                            random_grass_image = choice(graphics['grass'])
-                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'grass',random_grass_image)
+                        # if style == 'grass':
+                        #     random_grass_image = choice(graphics['grass'])
+                        #     Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
+                            print(int(col))
+                            
 
                             Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'object',surf)
 
                         if style == 'entities':
                             # number 394 comes from tile creation, It can change based on graphics
-                            if col == '394':
+                            if col == '5':
                                  self.player = Player((x,y),[self.visible_sprites],
                                                self.obstacles_sprites,
                                                self.create_attack,
                                                self.destroy_attack,
                                                self.create_ki)
                             else:
-                                if col == '390' : monster_name = 'bamboo'
-                                elif col == '391' : monster_name = 'spirit'
-                                elif col == '392' : monster_name = 'raccoon'
+                                if col == '3' : monster_name = 'bamboo'
+                                elif col == '1' : monster_name = 'spirit'
+                                elif col == '0' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites,self.damage_player)
-
-
-                        
-       
+                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
+                
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
-    #def create_attack(self): 
-       # self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
+    def create_attack(self): 
+        self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
-        #Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
+        Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
-        #self.player = Player((2000,1430),[self.visible_sprites],
-        #self.obstacles_sprites,
-        #self.create_attack,
-        #self.destroy_attack,
-        #self.create_ki)
+        self.player = Player((2000,1430),[self.visible_sprites],
+        self.obstacles_sprites,
+        self.create_attack,
+        self.destroy_attack,
+        self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
