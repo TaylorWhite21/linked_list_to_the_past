@@ -92,16 +92,16 @@ class Level:
                 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
-    def create_attack(self): 
-        self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
+    #def create_attack(self): 
+        #self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
-        Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
+        #Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
                             
-        self.player = Player((2000,1430),[self.visible_sprites],
-        self.obstacles_sprites,
-        self.create_attack,
-        self.destroy_attack,
-        self.create_ki)
+        #self.player = Player((2000,1430),[self.visible_sprites],
+        #self.obstacles_sprites,
+        #self.create_attack,
+        #self.destroy_attack,
+        #self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction

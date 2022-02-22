@@ -74,6 +74,9 @@ class Player(Entity):
         self.invulnerability_duration = 500
         self.hit_stun_duration = 250
 
+        #import sound
+        self.weapon_attack_sound = pygame.mixer.Sound('./audio/sword.wav')
+        self.weapon_attack_sound.set_volume(0.3)
 
     # imports player resources
     def import_player_assets(self):
@@ -137,6 +140,7 @@ class Player(Entity):
                     # Grabs time that attack was done
                     self.attack_time = pygame.time.get_ticks()  
                     self.create_attack()
+                    self.weapon_attack_sound.play()
                     # print('attack')
 
                 # ki input
