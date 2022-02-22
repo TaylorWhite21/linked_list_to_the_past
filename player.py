@@ -12,7 +12,7 @@ class Player(Entity):
         super().__init__(groups)
 
         # Sets the player image
-        self.image = pygame.image.load('./graphics/goku.png').convert_alpha()
+        self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
 
         #hitbox is slightly different size than sprite
@@ -22,6 +22,8 @@ class Player(Entity):
         self.import_player_assets()
         self.status = 'down'
         
+        #defines whether player is in control of character or not
+        self.player_controls = True
 
         #MOVEMENT
             # Sets the direction that the player can walk in
@@ -77,7 +79,7 @@ class Player(Entity):
         # sets the file path before importing
         character_path = './graphics/player/'
         # Dictionary of player states
-        self.animations = {'up': [], 'down': [], 'left':[], 'right':[], 'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [], 'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': []}
+        self.animations = {'up': [], 'down': [], 'left':[], 'right':[], 'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [], 'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': [], 'hit_down': [], 'hit_up': [], 'hit_left': [], 'hit_right': [], 'hit_down_idle': [], 'hit_up_idle': [], 'hit_left_idle': [], 'hit_right_idle': []}
         # Goes through dictionary assigns the path and fills the key with the animation
         for animation in self.animations.keys():
             full_path = character_path + animation
@@ -92,81 +94,81 @@ class Player(Entity):
     # Gets keyboard input and moves in desired direction
     # http://www.pygame.org/docs/ref/key.html
     def input(self):
+        if self.player_controls == True:
+            if not self.attacking: 
+            
+                keys = pygame.key.get_pressed()
 
-        if not self.attacking: 
-        
-            keys = pygame.key.get_pressed()
-
-            # Moves up or down and will stop moving if nothing is pressed
-            if keys[pygame.K_UP]:
-                self.direction.y = -1
-                self.status = 'up'
-            elif keys[pygame.K_DOWN]:
-                self.direction.y = 1
-                self.status = 'down'
-            else:
-                self.direction.y = 0
-
-            # Moves left or right and will stop moving if no key is pressed
-            if keys[pygame.K_LEFT]:
-                self.direction.x = -1
-                self.status = 'left'
-            elif keys[pygame.K_RIGHT]:
-                self.direction.x = 1
-                self.status = 'right'
-            else:
-                self.direction.x = 0
-
-            # attack input
-            if keys[pygame.K_SPACE]:
-                self.attacking = True
-                # Grabs time that attack was done
-                self.attack_time = pygame.time.get_ticks()  
-                self.create_attack()
-                print('attack')
-
-            # ki input
-            if keys[pygame.K_LCTRL]:
-                self.attacking = True
-                # Grabs time that attack was done
-                self.attack_time = pygame.time.get_ticks()
-                style = list(ki_data.keys())[self.ki_index]
-                strength = list(ki_data.values())[self.ki_index]['strength']
-                cost = list(ki_data.values())[self.ki_index]['cost']
-
-                self.create_ki(style, strength, cost)
-                
-            #weapons cycle
-            if keys[pygame.K_q] and self.can_switch_weapon:
-                self.can_switch_weapon = False 
-                self.weapon_switch_time = pygame.time.get_ticks()
-                #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
-                if self.weapon_index < len(list(weapon_data.keys())) - 1:
-                    self.weapon_index += 1
+                # Moves up or down and will stop moving if nothing is pressed
+                if keys[pygame.K_UP]:
+                    self.direction.y = -1
+                    self.status = 'up'
+                elif keys[pygame.K_DOWN]:
+                    self.direction.y = 1
+                    self.status = 'down'
                 else:
-                    #reset the list once at the end
-                    self.weapon_index = 0
-                self.weapon = list(weapon_data.keys())[self.weapon_index]
+                    self.direction.y = 0
 
-
-            # ki cycling
-            if keys[pygame.K_e] and self.can_switch_ki:
-                self.can_switch_ki = False 
-                self.ki_switch_time = pygame.time.get_ticks()
-                #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
-                if self.ki_index < len(list(ki_data.keys())) - 1:
-                    self.ki_index += 1
+                # Moves left or right and will stop moving if no key is pressed
+                if keys[pygame.K_LEFT]:
+                    self.direction.x = -1
+                    self.status = 'left'
+                elif keys[pygame.K_RIGHT]:
+                    self.direction.x = 1
+                    self.status = 'right'
                 else:
-                    #reset the list once at the end
-                    self.ki_index = 0
-                self.ki = list(ki_data.keys())[self.ki_index]
+                    self.direction.x = 0
+
+                # attack input
+                if keys[pygame.K_SPACE]:
+                    self.attacking = True
+                    # Grabs time that attack was done
+                    self.attack_time = pygame.time.get_ticks()  
+                    self.create_attack()
+                    # print('attack')
+
+                # ki input
+                if keys[pygame.K_LCTRL]:
+                    self.attacking = True
+                    # Grabs time that attack was done
+                    self.attack_time = pygame.time.get_ticks()
+                    style = list(ki_data.keys())[self.ki_index]
+                    strength = list(ki_data.values())[self.ki_index]['strength']
+                    cost = list(ki_data.values())[self.ki_index]['cost']
+
+                    self.create_ki(style, strength, cost)
+                    
+                #weapons cycle
+                if keys[pygame.K_q] and self.can_switch_weapon:
+                    self.can_switch_weapon = False 
+                    self.weapon_switch_time = pygame.time.get_ticks()
+                    #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+                    if self.weapon_index < len(list(weapon_data.keys())) - 1:
+                        self.weapon_index += 1
+                    else:
+                        #reset the list once at the end
+                        self.weapon_index = 0
+                    self.weapon = list(weapon_data.keys())[self.weapon_index]
+
+
+                # ki cycling
+                if keys[pygame.K_e] and self.can_switch_ki:
+                    self.can_switch_ki = False 
+                    self.ki_switch_time = pygame.time.get_ticks()
+                    #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+                    if self.ki_index < len(list(ki_data.keys())) - 1:
+                        self.ki_index += 1
+                    else:
+                        #reset the list once at the end
+                        self.ki_index = 0
+                    self.ki = list(ki_data.keys())[self.ki_index]
             
 
     def get_status(self):
         # Runs if we are not moving
         if self.direction.x == 0 and self.direction.y ==0:
             # Checks if status already contains idle
-            if not 'idle' in self.status and not 'attack' in self.status:
+            if not 'idle' in self.status and not 'attack' in self.status and self.vulnerable:
                 self.status = self.status + '_idle'
 
         if self.attacking:
@@ -195,7 +197,7 @@ class Player(Entity):
                 self.attacking = False
                 self.destroy_attack()
 
-                print(f'destroy:{self.destroy_attack}')
+                # print(f'destroy:{self.destroy_attack}')
 
         if not self.can_switch_weapon: 
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
@@ -211,6 +213,7 @@ class Player(Entity):
 
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.invulnerability_duration:
+                self.player_controls = True
                 self.vulnerable = True
 
     def animate(self):
@@ -223,15 +226,32 @@ class Player(Entity):
             self.frame_index = 0
         
         self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center = self.hitbox.center)
+        self.rect = self.image.get_rect(center = self.hitbox.center)     
 
+
+    def who_hit_me(self, enemy_ref):
+        pass
+
+        
+    def get_hit(self):
         if not self.vulnerable:
+            # self.status = 'hit_'+self.status
+            # if self.direction.x > 0: 
+            #     self.status = 'hit_right'
+            # if self.direction.x < 0:
+            #     self.status = 'hit_left'
+            # if self.direction.y > 0:
+            #     self.status = 'hit_up' 
+            # if self.direction.y < 0:
+            #     self.status = 'hit_down'
+            
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
+            self.direction.x = 1
+            print(self.direction)
+            self.move(self.speed)
         else:
             self.image.set_alpha(255)
-
-
 
     def get_full_weapon_damage(self):
         base_damage =self.stats['attack']
@@ -246,4 +266,5 @@ class Player(Entity):
         self.cooldowns()
         self.get_status()
         self.animate()
+        self.get_hit()
         self.move(self.speed)
