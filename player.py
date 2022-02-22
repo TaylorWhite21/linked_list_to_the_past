@@ -72,6 +72,7 @@ class Player(Entity):
         self.vulnerable = True
         self.hurt_time = None
         self.invulnerability_duration = 500
+        self.hit_stun_duration = 250
 
         #import sound
         self.weapon_attack_sound = pygame.mixer.Sound('./audio/sword.wav')
@@ -110,7 +111,8 @@ class Player(Entity):
                     self.direction.y = 1
                     self.status = 'down'
                 else:
-                    self.direction.y = 0
+                    if self.vulnerable:
+                        self.direction.y = 0
 
                 # Moves left or right and will stop moving if no key is pressed
                 if keys[pygame.K_LEFT]:
@@ -120,10 +122,20 @@ class Player(Entity):
                     self.direction.x = 1
                     self.status = 'right'
                 else:
-                    self.direction.x = 0
+                    if self.vulnerable:
+                        self.direction.x = 0
 
                 # attack input
                 if keys[pygame.K_SPACE]:
+                    if self.status == 'hit_down':
+                        self.status = 'down'
+                    if self.status == 'hit_up':
+                        self.status = 'up'
+                    if self.status == 'hit_left':
+                        self.status = 'left'
+                    if self.status == 'hit_right':
+                        self.status = 'right'
+
                     self.attacking = True
                     # Grabs time that attack was done
                     self.attack_time = pygame.time.get_ticks()  
@@ -216,8 +228,9 @@ class Player(Entity):
                 self.can_switch_weapon = True
 
         if not self.vulnerable:
-            if current_time - self.hurt_time >= self.invulnerability_duration:
+            if current_time - self.hurt_time >= self.hit_stun_duration:
                 self.player_controls = True
+            if current_time - self.hurt_time >= self.invulnerability_duration:
                 self.vulnerable = True
 
     def animate(self):
@@ -234,26 +247,32 @@ class Player(Entity):
 
 
     def who_hit_me(self, enemy_ref):
-        pass
+        enemy_vec = pygame.math.Vector2(enemy_ref)
+        player_vec = pygame.math.Vector2(self.rect.center)
+        
+        distance = (player_vec - enemy_vec).magnitude()
+
+        if distance > 0:
+            self.direction = (player_vec - enemy_vec).normalize() 
+                  
 
         
     def get_hit(self):
         if not self.vulnerable:
-            # self.status = 'hit_'+self.status
-            # if self.direction.x > 0: 
-            #     self.status = 'hit_right'
-            # if self.direction.x < 0:
-            #     self.status = 'hit_left'
-            # if self.direction.y > 0:
-            #     self.status = 'hit_up' 
-            # if self.direction.y < 0:
-            #     self.status = 'hit_down'
+            if self.player_controls == False:                
+                if self.direction.x < 0: 
+                    self.status = 'hit_right'
+                if self.direction.x > 0:
+                    self.status = 'hit_left'
+                if self.direction.y > 0:
+                    self.status = 'hit_up' 
+                if self.direction.y < 0:
+                    self.status = 'hit_down'
+                # self.status = 'hit_'+ self.status
             
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
-            self.direction.x = 1
-            print(self.direction)
-            self.move(self.speed)
+            self.move(self.speed*.5)            
         else:
             self.image.set_alpha(255)
 
