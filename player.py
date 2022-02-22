@@ -12,7 +12,7 @@ class Player(Entity):
         super().__init__(groups)
 
         # Sets the player image
-        self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
+        self.image = pygame.image.load('./graphics/goku.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
 
         #hitbox is slightly different size than sprite
