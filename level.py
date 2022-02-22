@@ -100,6 +100,8 @@ class Level:
         #self.create_ki)
 
 
+
+
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
     def create_attack(self): 
        self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
