@@ -9,7 +9,7 @@ class Enemy(Entity):
       super().__init__(groups)
       self.sprite_type = 'enemy'
 
-      # grphics setup
+      # graphics setup
       self.import_graphics(monster_name)
       self.status = 'idle'
       self.image = self.animations[self.status][self.frame_index]

@@ -1,13 +1,12 @@
 import pygame
 from settings import *
-from support import * 
+from support import *
 from tile import *
 from player import Player
 from random import choice
 from weapon import Weapon 
 from ui import UI
 from enemy import Enemy
-
 
 class Level: 
     def __init__(self):
@@ -39,19 +38,8 @@ class Level:
     # Nested loop that goes through WORLD MAP in settings.
     # Time Stamp: 19:00
     def create_map(self): 
-        # layout = {
-        #     'boundary': import_csv_layout('./map/map_FloorBlocks.csv'),
-        #     'grass': import_csv_layout('./map/map_Grass.csv'),
-        #     'object': import_csv_layout('./map/map_Objects.csv'),
-        #     'entities':import_csv_layout('./map/map_Entities.csv')
-        # }
-        # graphics = {
-        #     'grass': import_folder('./graphics/Grass'),
-        #     'objects': import_folder('./graphics/objects')
-        # }
-
         layout = {
-            # 'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
+            'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
             'entities':import_csv_layout('./map/custom_map/level_1_entities.csv'),
             'boundary': import_csv_layout('./map/custom_map/level_1_boundary.csv'),
             'grass': import_csv_layout('./map/custom_map/level_1_grass.csv'),
@@ -97,8 +85,8 @@ class Level:
                                                self.create_ki)
                             else:
                                 if col == '3' : monster_name = 'bamboo'
-                                elif col == '0' : monster_name = 'spirit'
-                                elif col == '2' : monster_name = 'raccoon'
+                                elif col == '1' : monster_name = 'spirit'
+                                elif col == '0' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
                                 Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
                 

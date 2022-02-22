@@ -10,8 +10,8 @@ class UI:
 
     # Bar setup
     # To change health and energy bar locations, change the integers and to change the size, change the variables in settings
-    self.health_bar_rect = pygame.Rect(10, 10,BAR_HEIGHT,HEALTH_BAR_WIDTH)
-    self.energy_bar_rect = pygame.Rect(34,10,BAR_HEIGHT, ENERGY_BAR_WIDTH)
+    self.health_bar_rect = pygame.Rect(10, 10,HEALTH_BAR_WIDTH, BAR_HEIGHT)
+    self.energy_bar_rect = pygame.Rect(10, 34, ENERGY_BAR_WIDTH, BAR_HEIGHT)
 
 
     # Converts weapon dictionary into a list to be used in the weapon overlay
