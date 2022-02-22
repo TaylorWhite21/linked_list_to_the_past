@@ -5,6 +5,7 @@ class Weapon(pygame.sprite.Sprite):
         super().__init__(groups)
 
         # gets us the player direction using status and splits the other player postions (ex. up_idle) at the _ so its just 'up'
+        self.sprite_type = 'weapon'
         direction = player.status.split('_')[0]
 
         # #graphic of the weapon (2:51)

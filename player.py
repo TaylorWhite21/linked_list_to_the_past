@@ -12,7 +12,7 @@ class Player(Entity):
         super().__init__(groups)
 
         # Sets the player image
-        self.image = pygame.image.load('./graphics/goku.png').convert_alpha()
+        self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
 
         #hitbox is slightly different size than sprite
@@ -65,6 +65,11 @@ class Player(Entity):
         # Sets the player speed
         self.speed = self.stats['speed']
         # full_heart = pygame.image.load('.\graphics\heart.png') 
+
+        # damage on timer
+        self.vulnerable = True
+        self.hurt_time = None
+        self.invulnerability_duration = 500
 
 
     # imports player resources
@@ -186,7 +191,7 @@ class Player(Entity):
         current_time = pygame.time.get_ticks()
         if self.attacking:
             # Checks if enough time has passed since attacking
-            if current_time - self.attack_time >= self.attack_cooldown:
+            if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
                 self.attacking = False
                 self.destroy_attack()
 
@@ -203,6 +208,11 @@ class Player(Entity):
         if not self.can_switch_weapon: 
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_weapon = True
+
+        if not self.vulnerable:
+            if current_time - self.hurt_time >= self.invulnerability_duration:
+                self.vulnerable = True
+
     def animate(self):
         # Gets animation from dictionary based off player status
         animation = self.animations[self.status]
@@ -214,6 +224,20 @@ class Player(Entity):
         
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)
+
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
+
+
+
+    def get_full_weapon_damage(self):
+        base_damage =self.stats['attack']
+        weapon_damage=weapon_data[self.weapon]['damage']
+        return base_damage + weapon_damage
+
 
     
     # Updates the player

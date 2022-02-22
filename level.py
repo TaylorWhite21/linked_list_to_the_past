@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-from support import *
+from support import * 
 from tile import *
 from player import Player
 from random import choice
@@ -8,8 +8,9 @@ from weapon import Weapon
 from ui import UI
 from enemy import Enemy
 
+
 class Level: 
-    def __init__(self):
+    def __init__(self): 
 
         # Get the display surface 
         # https://www.pygame.org/docs/ref/surface.html
@@ -32,8 +33,6 @@ class Level:
 
         # user interface
         self.ui = UI()
-    
-
 
     # Nested loop that goes through WORLD MAP in settings.
     # Time Stamp: 19:00
@@ -47,7 +46,7 @@ class Level:
         }
         
         graphics = {
-            # 'grass': import_folder('./graphics/Grass'),
+            'grass': import_folder('./graphics/Grass'),
             'objects': import_folder('./graphics/objects')
         }
         # print(f'graphics: {graphics}')
@@ -64,9 +63,9 @@ class Level:
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x,y),[self.obstacles_sprites], 'invisible')
-                        # if style == 'grass':
-                        #     random_grass_image = choice(graphics['grass'])
-                        #     Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
+                        if style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'grass',random_grass_image)
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
@@ -88,7 +87,7 @@ class Level:
                                 elif col == '1' : monster_name = 'spirit'
                                 elif col == '0' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites)
+                                Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites, self.damage_player)
                 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
@@ -106,7 +105,7 @@ class Level:
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
     def create_attack(self): 
-       self.current_attack = Weapon(self.player,[self.visible_sprites]) 
+       self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
 
 
     def destroy_attack(self): 
@@ -125,10 +124,21 @@ class Level:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprite =pygame.sprite.spritecollide(attack_sprite,self.attack_sprites,True)
+                collision_sprite =pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False)
                 if collision_sprite:
                     for target_sprite in collision_sprite:
-                        target_sprite.kill()
+                        if target_sprite.sprite_type == 'grass':
+                            target_sprite.kill()
+                        else:
+                            target_sprite.get_damage(self.player,attack_sprite.sprite_type)
+
+    def damage_player(self,amount,attack_type):
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+
+
 
     def run(self): 
         # draws the player sprite 
@@ -138,10 +148,8 @@ class Level:
         self.visible_sprites.enemy_update(self.player)
         self.player_attack_logic()
         self.ui.display(self.player)
-        # self.Ground_sprites.draw(self.display_surface)
-        # self.Ground_sprites.update(self.world_shift)
 
-#camera class, extends sprite group to allow z axis functionality
+#camera class, extends sprite group to allow z axis functionlity
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         #class extends sprite groups        
@@ -150,7 +158,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         #gets a reference to the display
         self.display_surface = pygame.display.get_surface()
 
-        #finding half the height/width of the screen
+        #finding hlaf the height/width of the screen
         self.half_width = self.display_surface.get_size()[0]//2
         self.half_height = self.display_surface.get_size()[1]//2
 

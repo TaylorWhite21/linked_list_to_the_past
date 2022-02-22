@@ -2,8 +2,9 @@ import pygame, sys
 from settings import *
 from level import Level
 
-
 # from debug import debug
+
+
 
 class Game:
   def __init__(self):
@@ -19,11 +20,8 @@ class Game:
 
     
     # Instantiates the Level
-    self.level = Level()
-
-    #testing custom map
-    # self.level = Level(level_0,self.screen)
-
+    self.level = Level() 
+  
   # Runs the game and checks if the player has exited
   def run(self):
     while True:
@@ -36,8 +34,6 @@ class Game:
 
       # Calls the run method inside of the level class in level.py
       self.level.run()
-
-
 
       # Updates portions of the screen for software displays
       pygame.display.update()

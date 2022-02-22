@@ -1,15 +1,16 @@
-from turtle import distance
+
 import pygame
 from settings import *
 from entity import Entity
 from support import *
+from player import *
 
 class Enemy(Entity):
-  def __init__(self, monster_name,pos,groups,obstacle_sprite):
+  def __init__(self, monster_name,pos,groups,obstacle_sprite,damage_player):
       super().__init__(groups)
       self.sprite_type = 'enemy'
 
-      # graphics setup
+      # grphics setup
       self.import_graphics(monster_name)
       self.status = 'idle'
       self.image = self.animations[self.status][self.frame_index]
@@ -35,6 +36,13 @@ class Enemy(Entity):
       self.can_attack = True
       self.attact_time = None
       self.attact_cooldown = 400
+      self.damage_player = damage_player
+
+      #timer
+      self.vulnerable = True
+      self.hit_time = None
+      self.invincibility_duration = 300
+
 
 
   # importing different graphic for enemies in different states
@@ -51,7 +59,7 @@ class Enemy(Entity):
     distance = (player_vec - enemy_vec).magnitude()
 
     if distance >0:
-      direction = (player_vec - enemy_vec).normalize()
+      direction =(player_vec - enemy_vec).normalize()
 
     else:
       direction = pygame.math.Vector2()
@@ -74,6 +82,7 @@ class Enemy(Entity):
   def actions(self,player):
     if self.status == 'attack':
       self.attact_time = pygame.time.get_ticks()
+      self.damage_player(self.attack_damage, self.attack_type)
     elif self.status == 'move':
       self.direction = self.get_player_distance_direction(player)[1]
     else:
@@ -91,17 +100,48 @@ class Enemy(Entity):
     self.image = animation[int(self.frame_index)]
     self.rect = self.image.get_rect(center = self.hitbox.center)
 
-  def cooldown(self):
+    if not self.vulnerable:
+      alpha =self.wave_value()
+      self.image.set_alpha(alpha)
+
+    else:
+      self.image.set_alpha(255)
+
+  def cooldowns(self):
+    current_time = pygame.time.get_ticks()
     if not self.can_attack:
       current_time = pygame.time.get_ticks()
       if current_time - self.attact_time > self.attact_cooldown:
         self.can_attack = True
+    if not self.vulnerable:
+      if current_time - self.hit_time >= self.invincibility_duration:
+        self.vulnerable = True
 
+
+  def get_damage(self,player,attack_type):
+    if self.vulnerable:
+      self.direction = self.get_player_distance_direction(player)[1]
+      if attack_type == 'weapon':
+        self.health -= player.get_full_weapon_damage()
+      else:
+        pass
+      self.hit_time = pygame.time.get_ticks()
+      self.vulnerable = False
+
+  def check_death(self):
+    if self.health <=0:
+      self.kill()
+
+  def hit_reaction(self):
+    if not self.vulnerable:
+      self.direction *= -self.resistance
 
   def update(self):
+    self.hit_reaction()
     self.move(self.speed)
     self.animate()
-    self.cooldown()
+    self.cooldowns()
+    self.check_death()
 
   def enemy_update(self,player):
     self.get_status(player)
