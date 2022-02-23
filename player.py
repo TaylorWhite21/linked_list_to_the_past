@@ -1,14 +1,15 @@
+
 import pygame
 from entity import Entity 
+
+import pygame,sys
 from settings import *
-from support import import_folder
+from support import import_folder 
 
 class Player(Entity): 
 
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
         super().__init__(groups)
-        self.green = (0, 255, 0)
-        self.blue = (0, 0, 128)
 
         # Sets the player image
         self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
@@ -50,7 +51,7 @@ class Player(Entity):
         self.switch_duration_cooldown = 200      
         
         # Stats        
-        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
+        self.stats = {'health': 1, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
         # Sets the player health
         self.health = self.stats['health']
         # Sets the player energy
@@ -68,7 +69,7 @@ class Player(Entity):
         #import sound
         self.weapon_attack_sound = pygame.mixer.Sound('./audio/sword.wav')
         self.weapon_attack_sound.set_volume(0.3)
-    
+
     # imports player resources
     def import_player_assets(self):
         # sets the file path before importing
@@ -133,6 +134,17 @@ class Player(Entity):
                     self.create_attack()
                     self.weapon_attack_sound.play()
                     # print('attack')
+
+                # ki input
+                # if keys[pygame.K_LCTRL]:
+                #     self.attacking = True
+                #     # Grabs time that attack was done
+                #     self.attack_time = pygame.time.get_ticks()
+                #     style = list(ki_data.keys())[self.ki_index]
+                #     strength = list(ki_data.values())[self.ki_index]['strength']
+                #     cost = list(ki_data.values())[self.ki_index]['cost']
+
+                #     self.create_ki(style, strength, cost)
                     
                 #weapons cycle
                 if keys[pygame.K_q] and self.can_switch_weapon:
@@ -145,6 +157,19 @@ class Player(Entity):
                         #reset the list once at the end
                         self.weapon_index = 0
                     self.weapon = list(weapon_data.keys())[self.weapon_index]
+
+
+                # ki cycling
+                # if keys[pygame.K_e] and self.can_switch_ki:
+                #     self.can_switch_ki = False 
+                #     self.ki_switch_time = pygame.time.get_ticks()
+                #     #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
+                #     if self.ki_index < len(list(ki_data.keys())) - 1:
+                #         self.ki_index += 1
+                #     else:
+                #         #reset the list once at the end
+                #         self.ki_index = 0
+                #     self.ki = list(ki_data.keys())[self.ki_index]
             
 
     def get_status(self):
@@ -154,7 +179,7 @@ class Player(Entity):
             if not 'idle' in self.status and not 'attack' in self.status and self.vulnerable:
                 self.status = self.status + '_idle'
 
-        if self.attacking:
+        if self.attacking and self.vulnerable:
             # keeps player from moving while attacking
             self.direction.x = 0
             self.direction.y = 0
@@ -192,6 +217,15 @@ class Player(Entity):
 
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.hit_stun_duration:
+                if self.status == 'hit_down':
+                    self.status = 'down'
+                if self.status == 'hit_up':
+                    self.status = 'up'
+                if self.status == 'hit_left':
+                    self.status = 'left'
+                if self.status == 'hit_right':
+                    self.status = 'right'
+
                 self.player_controls = True
             if current_time - self.hurt_time >= self.invulnerability_duration:
                 self.vulnerable = True
@@ -235,8 +269,7 @@ class Player(Entity):
             
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
-            self.move(self.speed*.5)
-                        
+            self.move(self.speed*.5)            
         else:
             self.image.set_alpha(255)
 
@@ -245,14 +278,8 @@ class Player(Entity):
         weapon_damage=weapon_data[self.weapon]['damage']
         return base_damage + weapon_damage
 
-    def your_dead(self):
-        self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font(WIN_FONT, WIN_FONT_SIZE)
-        text = self.font.render('You Died! Press R to restart.', True, self.green, self.blue)
-        textRect = text.get_rect()
-        textRect.center = (675, 675)
-        self.display_surface.blit(text, textRect)
-        
+
+    
     # Updates the player
     def update(self):
         self.input()
@@ -261,5 +288,3 @@ class Player(Entity):
         self.animate()
         self.get_hit()
         self.move(self.speed)
-
-            

@@ -3,6 +3,8 @@ import pygame
 class Weapon(pygame.sprite.Sprite):
     def __init__(self,player,groups): 
         super().__init__(groups)
+        #keep ref to player
+        self.player = player
 
         # gets us the player direction using status and splits the other player postions (ex. up_idle) at the _ so its just 'up'
         self.sprite_type = 'weapon'
@@ -24,4 +26,7 @@ class Weapon(pygame.sprite.Sprite):
         #     #  when direction == 'up':
             self.rect = self.image.get_rect(midbottom = player.rect.midtop + pygame.math.Vector2(-15,7))
 
+    def update(self):
+        if self.player.vulnerable != True:
+            self.kill()
 
