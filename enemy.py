@@ -100,13 +100,13 @@ class Enemy(Entity):
         self.direction.y = 0
       self.attack_sound.play()
     elif self.status == 'move':
-      self.direction = self.get_player_distance_direction(player)[1]
+      if player.vulnerable:
+        self.direction = self.get_player_distance_direction(player)[1]
     else:
       self.direction = pygame.math.Vector2()
 
 
-  def animate(self):
-    
+  def animate(self):    
     animation = self.animations[self.status]
     self.frame_index += self.animation_speed
     if self.frame_index >= len(animation):
@@ -126,8 +126,10 @@ class Enemy(Entity):
 
   def cooldowns(self):
     current_time = pygame.time.get_ticks()
-    if not self.can_attack:
-      current_time = pygame.time.get_ticks()
+    if self.can_attack:
+      self.attact_time = pygame.time.get_ticks()
+
+    if not self.can_attack:      
       if current_time - self.attact_time > self.attact_cooldown:
         self.can_attack = True
     if not self.vulnerable:
@@ -155,7 +157,6 @@ class Enemy(Entity):
         self.not_dead = False
       self.death_sound.play()
       self.status = 'skull'
-      print(f'my status: {self.status}')
       if current_time - self.dead_time >= self.death_timer:
         self.kill()
 
