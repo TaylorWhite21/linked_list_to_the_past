@@ -1,12 +1,14 @@
 import pygame
+import enemy_count
 from settings import *
-from support import * 
+from support import *
 from tile import *
 from player import Player
 from random import choice
-from weapon import Weapon 
+from weapon import Weapon
 from ui import UI
 from enemy import Enemy
+
 
 
 class Level: 
@@ -39,6 +41,21 @@ class Level:
 
     # Nested loop that goes through WORLD MAP in settings.
     # Time Stamp: 19:00
+
+    def win(self):
+        self.display_surface = pygame.display.get_surface()
+        self.font = pygame.font.Font(WIN_FONT, WIN_FONT_SIZE)
+        text = self.font.render('YOU WIN!!!! Press R to restart.', True, self.green, self.blue)
+        textRect = text.get_rect()
+        textRect.center = (675, 675)
+        self.display_surface.blit(text, textRect)
+
+        
+
+
+
+
+
     def create_map(self): 
         layout = {
             'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
@@ -86,24 +103,19 @@ class Level:
                                                self.create_attack,
                                                self.destroy_attack)
                             else:
-                                if col == '3' : monster_name = 'bamboo'
-                                elif col == '1' : monster_name = 'spirit'
-                                elif col == '0' : monster_name = 'raccoon'
-                                else: monster_name = 'squid'
+                                if col == '3' : 
+                                    monster_name = 'bamboo'
+
+                                elif col == '1' : 
+                                    monster_name = 'spirit'
+
+                                elif col == '0' : 
+                                    monster_name = 'raccoon'
+
+                                else: 
+                                    monster_name = 'squid'
+
                                 Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites, self.damage_player)
-                
-
-    #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
-    #def create_attack(self): 
-        #self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
-
-        #Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
-                            
-        #self.player = Player((2000,1430),[self.visible_sprites],
-        #self.obstacles_sprites,
-        #self.create_attack,
-        #self.destroy_attack,
-        #self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
@@ -116,18 +128,11 @@ class Level:
             self.current_attack.kill()
         self.current_attack = None 
 
-    def create_ki(self, style, strength, cost):
-        print(style)
-        print(strength)
-        print(cost)
-
     def import_graphics(self):
         self.animations = {'leaf':[]}
         main_path = f'./graphics/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation)
-
-    
 
     def player_attack_logic(self):
         if self.attack_sprites:
@@ -143,15 +148,15 @@ class Level:
                         else:
                             target_sprite.get_damage(self.player,attack_sprite.sprite_type)
 
+
     def damage_player(self,amount,attack_type, enemy_ref):
-        if self.player.vulnerable:            
+        if self.player.vulnerable:
+            print(self.player.health)          
             self.player.health -= amount
             self.player.player_controls = False
             self.player.vulnerable = False
             self.player.who_hit_me(enemy_ref)
             self.player.hurt_time = pygame.time.get_ticks()
-
-
 
     def run(self): 
         # draws the player sprite 
@@ -161,8 +166,13 @@ class Level:
         self.visible_sprites.enemy_update(self.player)
         self.player_attack_logic()
         self.ui.display(self.player)
+        if enemy_count.enemy_count == 0:
+            self.win()
+        if self.player.health <= 0:
+            self.player.your_dead()
 
-#camera class, extends sprite group to allow z axis functionlity
+
+#camera class, extends sprite group to allow z axis functionality
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         #class extends sprite groups        
@@ -200,3 +210,4 @@ class YSortCameraGroup(pygame.sprite.Group):
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
+

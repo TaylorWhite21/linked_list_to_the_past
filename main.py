@@ -5,7 +5,7 @@ from buttons import *
 
 # from debug import debug
 
-class Game:
+class Gameloop:
   def __init__(self):
     pygame.init()
      
@@ -19,7 +19,7 @@ class Game:
     self.clock = pygame.time.Clock()
     
     # Instantiates the Level
-    self.level = Level() 
+    self.level = Level()
   
   def get_font(self, size):
     return pygame.font.Font('./graphics/font/Capture_it.ttf', size)
@@ -27,7 +27,7 @@ class Game:
   def play(self):
       self.MAIN_MENU_MUSIC.stop()
       main_sound =pygame.mixer.Sound('./audio/main.wav')
-      main_sound.set_volume(0.3)
+      main_sound.set_volume(0.01)
       main_sound.play(loops = -1)
       while True:
           game.run()
@@ -91,7 +91,8 @@ class Game:
 
   # Runs the game and checks if the player has exited
   def run(self):
-    while True:
+    game_exit = True
+    while game_exit == True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -101,6 +102,11 @@ class Game:
 
       # Calls the run method inside of the level class in level.py
       self.level.run()
+      keys = pygame.key.get_pressed()
+      if keys[pygame.K_r]:
+        game_exit = False
+        game = Gameloop()
+        game.run()
 
       # Updates portions of the screen for software displays
       pygame.display.update()
@@ -110,5 +116,5 @@ class Game:
 
 
 if __name__ == '__main__':
-  game = Game()
+  game = Gameloop()
   game.main_menu()

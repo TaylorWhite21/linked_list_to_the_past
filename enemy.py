@@ -1,20 +1,24 @@
 
 import pygame
+import enemy_count
 from settings import *
 from entity import Entity
 from support import *
 from player import *
 
+# enemy_count = 0
+
 class Enemy(Entity):
   def __init__(self, monster_name,pos,groups,obstacle_sprite,damage_player):
       super().__init__(groups)
       self.sprite_type = 'enemy'
-
-      # grphics setup
+      # global enemy_count
+      # enemy_count+=1
+      # graphics setup
+      enemy_count.increment_enemies()
       self.import_graphics(monster_name)
       self.status = 'idle'
       self.image = self.animations[self.status][self.frame_index]
-
       # movement
       self.rect = self.image.get_rect(topleft = pos)
       self.hitbox = self.rect.inflate(0,-10)
@@ -49,11 +53,9 @@ class Enemy(Entity):
       self.death_sound = pygame.mixer.Sound('./audio/death.wav')
       self.hit_sound = pygame.mixer.Sound('./audio/hit.wav')
       self.attack_sound =pygame.mixer.Sound(monster_info['attack_sound'])
-      self.death_sound.set_volume(0.2)
-      self.hit_sound.set_volume(0.2)
-      self.attack_sound.set_volume(0.1)
-
-
+      self.death_sound.set_volume(0.01)
+      self.hit_sound.set_volume(0.01)
+      self.attack_sound.set_volume(0.01)
 
   # importing different graphic for enemies in different states
   def import_graphics(self,name):
@@ -149,6 +151,7 @@ class Enemy(Entity):
       self.vulnerable = False
 
   def check_death(self):
+    # global enemy_count
     current_time = pygame.time.get_ticks()
 
     if self.health <=0:
@@ -158,6 +161,7 @@ class Enemy(Entity):
       self.death_sound.play()
       self.status = 'skull'
       if current_time - self.dead_time >= self.death_timer:
+        enemy_count.decrement()
         self.kill()
 
   def hit_reaction(self):
