@@ -8,7 +8,7 @@ from buttons import *
 class Game:
   def __init__(self):
     pygame.init()
-    
+     
     # Sets the size of the game screen. Sizes are grabbed from settings.py
     self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
     self.MAIN_MENU_MUSIC = pygame.mixer.Sound('./audio/menu_music.wav')
