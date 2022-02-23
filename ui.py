@@ -68,5 +68,6 @@ class UI:
 
         # Box for weapon
         self.weapon_overlay(player.weapon_index)
+        
         # Box for ki
         # self.ki_overlay(player.ki_index)
