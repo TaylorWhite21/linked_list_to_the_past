@@ -20,12 +20,15 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
 
         # Sets up the obstacles sprites group
-        self.obstacles_sprites = pygame.sprite.Group() 
+        self.obstacles_sprites = pygame.sprite.Group()
 
         #attack sprites 
         self.current_attack = None
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
+
+        # object animations setup
+        self.import_graphics()
 
          #sprite setup
             # Creates map on initialization
@@ -81,8 +84,7 @@ class Level:
                                  self.player = Player((x,y),[self.visible_sprites],
                                                self.obstacles_sprites,
                                                self.create_attack,
-                                               self.destroy_attack,
-                                               self.create_ki)
+                                               self.destroy_attack)
                             else:
                                 if col == '3' : monster_name = 'bamboo'
                                 elif col == '1' : monster_name = 'spirit'
@@ -119,14 +121,22 @@ class Level:
         print(strength)
         print(cost)
 
+    def import_graphics(self):
+        self.animations = {'leaf':[]}
+        main_path = f'./graphics/'
+        for animation in self.animations.keys():
+            self.animations[animation] = import_folder(main_path + animation)
+
+    
 
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprite =pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False)
+                collision_sprite = pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False)
                 if collision_sprite:
                     for target_sprite in collision_sprite:
                         if target_sprite.sprite_type == 'grass':
+
                             target_sprite.kill()
                         elif target_sprite.sprite_type == 'object':
                             pass
