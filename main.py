@@ -5,7 +5,9 @@ from buttons import *
 
 # from debug import debug
 
-class Gameloop:
+class 
+
+class Game:
   def __init__(self):
     pygame.init()
      
@@ -19,7 +21,7 @@ class Gameloop:
     self.clock = pygame.time.Clock()
     
     # Instantiates the Level
-    self.level = Level()
+    self.level = Level() 
   
   def get_font(self, size):
     return pygame.font.Font('./graphics/font/Capture_it.ttf', size)
@@ -91,8 +93,7 @@ class Gameloop:
 
   # Runs the game and checks if the player has exited
   def run(self):
-    game_exit = True
-    while game_exit == True:
+    while True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -102,11 +103,6 @@ class Gameloop:
 
       # Calls the run method inside of the level class in level.py
       self.level.run()
-      keys = pygame.key.get_pressed()
-      if keys[pygame.K_r]:
-        game_exit = False
-        game = Gameloop()
-        game.run()
 
       # Updates portions of the screen for software displays
       pygame.display.update()
@@ -116,5 +112,5 @@ class Gameloop:
 
 
 if __name__ == '__main__':
-  game = Gameloop()
+  game = Game()
   game.main_menu()
