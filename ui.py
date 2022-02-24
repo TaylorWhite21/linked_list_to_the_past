@@ -1,16 +1,22 @@
 import pygame
 from settings import *
+import enemy_count
 
 class UI:
   def __init__(self):
     
     self.display_surface = pygame.display.get_surface()
     self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+    self.white = (255, 255, 255)
+    self.black = (0, 0, 0)
+    self.green = (0, 255, 0)
+    self.blue = (0, 0, 128)
+    self.X = 700
+    self.Y = 700
 
     # Bar setup
     # To change health and energy bar locations, change the integers and to change the size, change the variables in settings
     self.health_bar_rect = pygame.Rect(10, 10,HEALTH_BAR_WIDTH, BAR_HEIGHT)
-
 
     # Converts weapon dictionary into a list to be used in the weapon overlay
     self.weapon_graphics = []
@@ -18,6 +24,14 @@ class UI:
       path = weapon['graphic']
       weapon = pygame.image.load(path).convert_alpha()
       self.weapon_graphics.append(weapon)
+  
+  def enemies_left(self, enemy_count):
+    self.display_surface = pygame.display.get_surface()
+    font = pygame.font.Font('./graphics/font/joystix.ttf', 18)
+    text = font.render(str(enemy_count)+ ' Enemie(s) left', True, self.green, self.white)
+    textRect = text.get_rect()
+    textRect.center = (self.X, self.Y)
+    self.display_surface.blit(text, textRect)
 
   def show_bar(self, current, max_amount, bg_rect, color):
     pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
@@ -45,9 +59,9 @@ class UI:
 
   # Displays player stats
   def display(self, player):
-
         # Calls show bar method and passes in current health, max health, the health bar location and the color
         self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)
 
         # Box for weapon
         self.weapon_overlay(player.weapon_index)
+        self.enemies_left(enemy_count.enemy_count)
