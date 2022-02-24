@@ -1,4 +1,5 @@
 import pygame
+import enemy_count
 from settings import *
 from support import * 
 from tile import *
@@ -17,6 +18,8 @@ class Level:
         # Get the display surface 
         # https://www.pygame.org/docs/ref/surface.html
         self.display_surface = pygame.display.get_surface()
+        self.green = (0, 255, 0)
+        self.blue = (0, 0, 128)
 
         # Sets up the camera group
         self.visible_sprites = YSortCameraGroup()
@@ -44,6 +47,15 @@ class Level:
 
     # Nested loop that goes through WORLD MAP in settings.
     # Time Stamp: 19:00
+
+    def win(self):
+        self.display_surface = pygame.display.get_surface()
+        self.font = pygame.font.Font(WIN_FONT, WIN_FONT_SIZE)
+        text = self.font.render('YOU WIN!!!! Press R to restart or M for Main Menu.', True, self.green, self.blue)
+        textRect = text.get_rect()
+        textRect.center = (675, 675)
+        self.display_surface.blit(text, textRect)
+
     def create_map(self): 
         layout = {
             'objects': import_csv_layout('./map/custom_map/level_1_objects.csv'),
@@ -57,7 +69,6 @@ class Level:
             'grass': import_folder('./graphics/Grass'),
             'objects': import_folder('./graphics/objects')
         }
-        # print(f'graphics: {graphics}')
         
         # # Enumerates every row
         for style,layout in layout.items():
@@ -78,38 +89,27 @@ class Level:
                             
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
-                            print(int(col))
-                            
 
                             Tile((x,y),[self.visible_sprites,self.obstacles_sprites,self.attackable_sprites],'object',surf)
 
                         if style == 'entities':
-                            # number 394 comes from tile creation, It can change based on graphics
                             if col == '5':
                                  self.player = Player((x,y),[self.visible_sprites],
                                                self.obstacles_sprites,
                                                self.create_attack,
                                                self.destroy_attack)
                             else:
-                                if col == '3' : monster_name = 'bamboo'
-                                elif col == '1' : monster_name = 'spirit'
-                                elif col == '0' : monster_name = 'raccoon'
-                                else: monster_name = 'squid'
+                                if col == '3': 
+                                    monster_name = 'bamboo'
+                                elif col == '1':
+                                     monster_name = 'spirit'
+                                elif col == '0':
+                                     monster_name = 'raccoon'
+                                else: 
+                                    monster_name = 'squid'
                                 Enemy(monster_name,(x,y),[self.visible_sprites,self.attackable_sprites],self.obstacles_sprites, self.damage_player,
                                 self.trigger_sword_slash_particles)
                 
-
-    #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
-    #def create_attack(self): 
-        #self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites]) 
-
-        #Tile((x,y),[self.visible_sprites,self.obstacles_sprites],'object',surf)
-                            
-        #self.player = Player((2000,1430),[self.visible_sprites],
-        #self.obstacles_sprites,
-        #self.create_attack,
-        #self.destroy_attack,
-        #self.create_ki)
 
 
     #this functions ties together the weapons class from weapons.py and the player so that we can get the direction of the player as well as the attack direction
@@ -121,11 +121,6 @@ class Level:
         if self.current_attack:
             self.current_attack.kill()
         self.current_attack = None 
-
-    def create_ki(self, style, strength, cost):
-        print(style)
-        print(strength)
-        print(cost)
 
     def import_graphics(self):
         self.animations = {'leaf':[]}
@@ -173,8 +168,12 @@ class Level:
         self.visible_sprites.enemy_update(self.player)
         self.player_attack_logic()
         self.ui.display(self.player)
+        if enemy_count.enemy_count == 0:
+            self.win()
+        if self.player.health <= 0:
+            self.player.your_dead()
 
-#camera class, extends sprite group to allow z axis functionlity
+#camera class, extends sprite group to allow z axis functionality
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         #class extends sprite groups        
@@ -183,7 +182,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         #gets a reference to the display
         self.display_surface = pygame.display.get_surface()
 
-        #finding hlaf the height/width of the screen
+        #finding half the height/width of the screen
         self.half_width = self.display_surface.get_size()[0]//2
         self.half_height = self.display_surface.get_size()[1]//2
 

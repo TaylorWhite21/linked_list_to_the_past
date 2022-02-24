@@ -1,15 +1,18 @@
 
 import pygame
 from entity import Entity 
-
-import pygame,sys
 from settings import *
-from support import import_folder 
+from support import import_folder
 
 class Player(Entity): 
 
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack):
         super().__init__(groups)
+        self.green = (0, 255, 0)
+        self.blue = (0, 0, 128)
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.last = pygame.time.get_ticks()
+        self.delay = 4000
 
         # Sets the player image
         self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
@@ -29,13 +32,12 @@ class Player(Entity):
             # Sets the direction that the player can walk in
         self.direction = pygame.math.Vector2()
 
-            # attack variables
+        # attack variables
         self.attacking = False
-        #400************************
         self.attack_cooldown = 200
         self.attack_timer = None
 
-            #sprites that will halt player movement
+        #sprites that will halt player movement
         self.obstacle_sprites = obstacle_sprites
         
         # WEAPONS
@@ -58,7 +60,6 @@ class Player(Entity):
         self.energy = self.stats['energy']
         # Sets the player speed
         self.speed = self.stats['speed']
-        # full_heart = pygame.image.load('.\graphics\heart.png') 
 
         # damage on timer
         self.vulnerable = True
@@ -75,13 +76,11 @@ class Player(Entity):
         # sets the file path before importing
         character_path = './graphics/player/'
         # Dictionary of player states
-        self.animations = {'up': [], 'down': [], 'left':[], 'right':[], 'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [], 'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': [], 'hit_down': [], 'hit_up': [], 'hit_left': [], 'hit_right': [], 'hit_down_idle': [], 'hit_up_idle': [], 'hit_left_idle': [], 'hit_right_idle': []}
+        self.animations = {'up': [], 'down': [], 'left':[], 'right':[], 'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [], 'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': [], 'hit_down': [], 'hit_up': [], 'hit_left': [], 'hit_right': [], 'hit_down_idle': [], 'hit_up_idle': [], 'hit_left_idle': [], 'hit_right_idle': [], 'death': []}
         # Goes through dictionary assigns the path and fills the key with the animation
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
-            #this is printing that surface stuff:
-            # print(self.animations)
 
     # Collision Detection for obstacles
     # Time stamp on tutorial: 42:00
@@ -133,18 +132,6 @@ class Player(Entity):
                     self.attack_time = pygame.time.get_ticks()  
                     self.create_attack()
                     self.weapon_attack_sound.play()
-                    # print('attack')
-
-                # ki input
-                # if keys[pygame.K_LCTRL]:
-                #     self.attacking = True
-                #     # Grabs time that attack was done
-                #     self.attack_time = pygame.time.get_ticks()
-                #     style = list(ki_data.keys())[self.ki_index]
-                #     strength = list(ki_data.values())[self.ki_index]['strength']
-                #     cost = list(ki_data.values())[self.ki_index]['cost']
-
-                #     self.create_ki(style, strength, cost)
                     
                 #weapons cycle
                 if keys[pygame.K_q] and self.can_switch_weapon:
@@ -158,32 +145,19 @@ class Player(Entity):
                         self.weapon_index = 0
                     self.weapon = list(weapon_data.keys())[self.weapon_index]
 
-
-                # ki cycling
-                # if keys[pygame.K_e] and self.can_switch_ki:
-                #     self.can_switch_ki = False 
-                #     self.ki_switch_time = pygame.time.get_ticks()
-                #     #starts the weapons wheel from the 0 index and moves through weapons list (unidirectional)
-                #     if self.ki_index < len(list(ki_data.keys())) - 1:
-                #         self.ki_index += 1
-                #     else:
-                #         #reset the list once at the end
-                #         self.ki_index = 0
-                #     self.ki = list(ki_data.keys())[self.ki_index]
-            
-
     def get_status(self):
         # Runs if we are not moving
-        if self.direction.x == 0 and self.direction.y ==0:
+        if self.direction.x == 0 and self.direction.y == 0:
             # Checks if status already contains idle
-            if not 'idle' in self.status and not 'attack' in self.status and self.vulnerable:
-                self.status = self.status + '_idle'
+            if not 'death' in self.status:
+                if not 'idle' in self.status and not 'attack' in self.status and self.vulnerable:
+                    self.status = self.status + '_idle'
 
         if self.attacking and self.vulnerable:
             # keeps player from moving while attacking
             self.direction.x = 0
             self.direction.y = 0
-            if not 'attack' in self.status:
+            if not 'attack' in self.status and not 'death' in self.status:
                 # If idle is in status, replace it with attack
                 if 'idle' in self.status:
                     self.status = self.status.replace('_idle', '_attack')
@@ -204,9 +178,6 @@ class Player(Entity):
             if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
                 self.attacking = False
                 self.destroy_attack()
-
-                # print(f'destroy:{self.destroy_attack}')
-
         if not self.can_switch_weapon: 
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_weapon = True
@@ -237,7 +208,10 @@ class Player(Entity):
         # Loops through frame index to animate player walking
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
-            self.frame_index = 0
+            if not 'death' in self.status:
+                self.frame_index = 0
+            else:
+                self.frame_index = 15
         
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)     
@@ -265,8 +239,6 @@ class Player(Entity):
                     self.status = 'hit_up' 
                 if self.direction.y < 0:
                     self.status = 'hit_down'
-                # self.status = 'hit_'+ self.status
-            
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
             self.move(self.speed*.5)            
@@ -278,8 +250,25 @@ class Player(Entity):
         weapon_damage=weapon_data[self.weapon]['damage']
         return base_damage + weapon_damage
 
+    def death_sequence(self):
+        self.display_surface = pygame.display.get_surface()
+        self.font = pygame.font.Font(WIN_FONT, WIN_FONT_SIZE)
+        text = self.font.render('You Died! Press R to restart or M for Main Menu', True, self.green, self.blue)
+        textRect = text.get_rect()
+        textRect.center = (600, 675)
+        self.screen.fill("black")
+        self.screen.blit(GAME_OVER, (150, 0))
+        self.display_surface.blit(text, textRect)
 
-    
+    def your_dead(self):
+        self.player_controls = False
+        self.direction.x = 0 
+        self.direction.y = 0
+        self.status = 'death'
+        now = pygame.time.get_ticks()
+        if now - self.last >= self.delay:
+            self.death_sequence()
+
     # Updates the player
     def update(self):
         self.input()
