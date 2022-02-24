@@ -1,13 +1,13 @@
 
 # A Linked_List_To_The_Past
 
-Team:
-Bionca Bond
-David Kariuki
-Michael Greene
-Taylor White
+### Team:  
+Bionca Bond  
+David Kariuki  
+Michael Greene  
+Taylor White  
 
-A simple game made in pygame that is similar to Zelda.
+A simple game made in Pygame that is similar to Zelda.
 
 [Communication Plan and Conflict Resolution Agreements](https://docs.google.com/document/d/1sxQ-36FK0KuXtHxJafk7SfMc3hJT4hAxr0C4Z5-2EWg/edit?usp=sharing)
 

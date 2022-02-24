@@ -15,7 +15,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = pygame.image.load(full_path).convert_alpha()
 
         # #weapon placement 
-        #     #sets the mid position of the player box to the middle opposite position of the weapons box + an offest to line up weapon where sprite's hand appears
+        #sets the mid position of the player box to the middle opposite position of the weapons box + an offest to line up weapon where sprite's hand appears
         if direction == 'right': 
             self.rect = self.image.get_rect(midleft = player.rect.midright + pygame.math.Vector2(-10,6))
         elif direction == 'left': 
@@ -23,7 +23,6 @@ class Weapon(pygame.sprite.Sprite):
         elif direction == 'down': 
             self.rect = self.image.get_rect(midtop = player.rect.midbottom + pygame.math.Vector2(11,-4)) 
         else:
-        #     #  when direction == 'up':
             self.rect = self.image.get_rect(midbottom = player.rect.midtop + pygame.math.Vector2(-15,7))
 
     def update(self):

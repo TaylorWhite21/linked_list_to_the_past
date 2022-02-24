@@ -1,5 +1,6 @@
 
 import pygame
+import enemy_count
 from settings import *
 from entity import Entity
 from support import *
@@ -9,8 +10,9 @@ class Enemy(Entity):
   def __init__(self, monster_name,pos,groups,obstacle_sprite,damage_player, trigger_sword_slash_particles):
       super().__init__(groups)
       self.sprite_type = 'enemy'
+      enemy_count.increment_enemies()
 
-      # grphics setup
+      # graphics setup
       self.import_graphics(monster_name)
       self.status = 'idle'
       self.image = self.animations[self.status][self.frame_index]
@@ -96,6 +98,7 @@ class Enemy(Entity):
   def actions(self,player):
     if player.health < 0:
       self.direction = pygame.math.Vector2(0,0)
+      self.status = 'skull'
 
     if self.status == 'attack':
       if player.vulnerable:
@@ -166,6 +169,7 @@ class Enemy(Entity):
       self.status = 'skull'
       if current_time - self.dead_time >= self.death_timer:
         self.death_sound.play()
+        enemy_count.decrement()
         self.kill()
 
   def hit_reaction(self):

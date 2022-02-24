@@ -1,4 +1,4 @@
-enemy_count = -25
+enemy_count = 0
 
 def decrement():
     global enemy_count

@@ -1,7 +1,13 @@
-https://www.deviantart.com/masterx70/art/Dvx-In-Hero-s-Soul-Ki-Sheet-109549647
 
-https://www.kenney.nl/assets/board-game-icons
+## Art:
+dedso1
 
+## Sound:  
+xDeviruchi
+
+References:  
+
+Tutorial:  
 https://www.youtube.com/watch?v=QU1pPzEGrqw&t=17052s
 
-https://www.youtube.com/watch?v=WLYEsgYkEvY
+https://stackoverflow.com/questions/18839039/how-to-wait-some-time-in-pygame
