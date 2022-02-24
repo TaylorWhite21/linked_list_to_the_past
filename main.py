@@ -28,7 +28,7 @@ class Game:
 
   def play(self):
       self.MAIN_MENU_MUSIC.stop()
-      self.gameplay_sound.set_volume(0.01)
+      self.gameplay_sound.set_volume(0.2)
       self.gameplay_sound.play(loops = -1)
       while True:
           game.run()
