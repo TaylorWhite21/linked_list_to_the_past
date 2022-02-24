@@ -28,13 +28,16 @@ class Game:
 
   def play(self):
       self.MAIN_MENU_MUSIC.stop()
-      self.gameplay_sound.set_volume(0.2)
+      self.gameplay_sound.set_volume(0.1)
+      self.gameplay_sound.stop()
       self.gameplay_sound.play(loops = -1)
       while True:
           game.run()
 
   def main_menu(self):
       self.MAIN_MENU_MUSIC.play()
+      self.gameplay_sound.stop()
+
       while True:
 
           self.MAIN_MENU_MUSIC.set_volume(0.2)
@@ -106,9 +109,11 @@ class Game:
         enemy_count.enemy_count = 0
         game = Game()
         game.run()
+
       if keys[pygame.K_m]:
         game_exit = False
         enemy_count.enemy_count = 0
+        self.MAIN_MENU_MUSIC.stop()
         self.gameplay_sound.stop()
         game = Game()
         game.main_menu()

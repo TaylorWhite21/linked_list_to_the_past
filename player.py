@@ -13,6 +13,8 @@ class Player(Entity):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.last = pygame.time.get_ticks()
         self.delay = 4000
+        self.play_death = False
+        self.death_sound =pygame.mixer.Sound('./audio/shiiiiit.wav')
 
         # Sets the player image
         self.image = pygame.image.load('./graphics/player/down/down_0.png').convert_alpha()
@@ -53,7 +55,7 @@ class Player(Entity):
         self.switch_duration_cooldown = 200      
         
         # Stats        
-        self.stats = {'health': 1, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
+        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'ki': 4, 'speed': 6}
         # Sets the player health
         self.health = self.stats['health']
         # Sets the player energy
@@ -259,6 +261,10 @@ class Player(Entity):
         self.screen.fill("black")
         self.screen.blit(GAME_OVER, (150, 0))
         self.display_surface.blit(text, textRect)
+        if self.play_death == False:   
+            self.death_sound.play()
+            self.play_death = True
+            
 
     def your_dead(self):
         self.player_controls = False
