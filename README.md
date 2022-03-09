@@ -12,6 +12,9 @@ A simple game made in Pygame that is similar to Zelda.
 
 [Communication Plan and Conflict Resolution Agreements](https://docs.google.com/document/d/1sxQ-36FK0KuXtHxJafk7SfMc3hJT4hAxr0C4Z5-2EWg/edit?usp=sharing)
 
+### Demo Video:  
+[<img alt="Demo Video" width="500px" src="https://github.com/TaylorWhite21/TaylorWhite21/raw/main/img/thumb.png"/>](https://youtu.be/fCLFO1zBbZk)  
+
 ## Software Requirements
 
 ### Vision
